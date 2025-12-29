@@ -32,9 +32,9 @@ int main() {
     doc.open();
 
     for (auto p : doc.paragraphs()) {
-	for (auto r : p.runs()) {
-            std::cout << r.get_text() << std::endl;
-	}
+	    for (auto r : p.runs()) {
+			std::cout << r.get_text() << std::endl;
+		}
     }
 }
 ```
