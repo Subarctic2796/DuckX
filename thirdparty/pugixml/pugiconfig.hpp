@@ -3,8 +3,8 @@
  * --------------------------------------------------------
  * Report bugs and download new versions at https://pugixml.org/
  *
- * SPDX-FileCopyrightText: Copyright (C) 2006-2025, by Arseny Kapoulkine (arseny.kapoulkine@gmail.com)
- * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: Copyright (C) 2006-2025, by Arseny Kapoulkine
+ * (arseny.kapoulkine@gmail.com) SPDX-License-Identifier: MIT
  *
  * See LICENSE.md or notice at the end of this file.
  */
@@ -28,10 +28,11 @@
 // #define PUGIXML_NO_EXCEPTIONS
 
 // Set this to control attributes for public classes/functions, i.e.:
-// #define PUGIXML_API __declspec(dllexport) // to export all public symbols from DLL
-// #define PUGIXML_CLASS __declspec(dllimport) // to import all classes from DLL
-// #define PUGIXML_FUNCTION __fastcall // to set calling conventions to all public functions to fastcall
-// In absence of PUGIXML_CLASS/PUGIXML_FUNCTION definitions PUGIXML_API is used instead
+// #define PUGIXML_API __declspec(dllexport) // to export all public symbols
+// from DLL #define PUGIXML_CLASS __declspec(dllimport) // to import all classes
+// from DLL #define PUGIXML_FUNCTION __fastcall // to set calling conventions to
+// all public functions to fastcall In absence of PUGIXML_CLASS/PUGIXML_FUNCTION
+// definitions PUGIXML_API is used instead
 
 // Tune these constants to adjust memory-related behavior
 // #define PUGIXML_MEMORY_PAGE_SIZE 32768
@@ -42,13 +43,13 @@
 // #define PUGIXML_XPATH_DEPTH_LIMIT 1024
 
 // Uncomment this to switch to header-only version
-// #define PUGIXML_HEADER_ONLY
+#define PUGIXML_HEADER_ONLY
 
 // Uncomment this to enable long long support (usually enabled automatically)
 // #define PUGIXML_HAS_LONG_LONG
 
-// Uncomment this to enable support for std::string_view (usually enabled automatically)
-// #define PUGIXML_HAS_STRING_VIEW
+// Uncomment this to enable support for std::string_view (usually enabled
+// automatically) #define PUGIXML_HAS_STRING_VIEW
 
 #endif
 

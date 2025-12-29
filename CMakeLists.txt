@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.31)
 
-project(duckx VERSION 0.2)
+project(duckx VERSION 1.2.3)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	include(CTest)
@@ -10,10 +10,10 @@ option(BUILD_SHARED_LIBS "Build shared instead of static library" OFF)
 option(BUILD_SAMPLES "Build provided samples" OFF)
 
 # Fix issues when building with clang 12, next version of clang
-# else we might encounter errors making the library 
+# else we might encounter errors making the library
 # not being able to be compiled
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 23)
 
 set(HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/duckx.hpp"
             "${CMAKE_CURRENT_SOURCE_DIR}/include/constants.hpp"
@@ -53,7 +53,7 @@ if (BUILD_SAMPLES)
 	set(SAMPLE2_SOURCES samples/sample2.cpp)
 	add_executable(duckx_sample2 ${SAMPLE2_SOURCES})
 	target_link_libraries(duckx_sample2 duckx)
-        
+
         file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/samples/my_test.docx
             DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()
