@@ -25,17 +25,17 @@ More informations are available in [this](https://duckx.readthedocs.io/en/latest
 Here's an example of how to use duckx to read a docx file; It opens a docx file named **file.docx** and goes over paragraphs and runs to print them:
 ```c++
 #include <iostream>
-#include <duckx/duckx.hpp>
+#include <duckx.hpp>
 
 int main() {
-
-    duckx::Document doc("file.docx");   
-
+    duckx::Document doc("file.docx");
     doc.open();
 
-    for (auto p : doc.paragraphs())
-	for (auto r : p.runs())
+    for (auto p : doc.paragraphs()) {
+	for (auto r : p.runs()) {
             std::cout << r.get_text() << std::endl;
+	}
+    }
 }
 ```
 
@@ -51,7 +51,8 @@ g++ sample1.cpp -lduckx
 
 ## Install ##
 
-Easy as pie!
+Just copy all of the files in the *src* folder. If you want to update the dependencies just replace the files from the dependency
+you wish to update with the newer files and make the needed changes
 
 #### Compiling
 
