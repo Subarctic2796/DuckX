@@ -1,5 +1,5 @@
-#include <duckx.hpp>
-#include <duckxiterator.hpp>
+// #include <duckx.hpp>
+#include "../src/duckx.hpp"
 #include <sstream>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -38,13 +38,12 @@ struct MyTestObject final {
     }
 };
 // Entry point
-auto begin(MyTestObject const &obj) -> iterator<MyTestObject, int> {
+Iterator<MyTestObject, int> begin(MyTestObject const &obj) {
     return Iterator<MyTestObject, int, int>(obj.parent, obj.current);
 }
 
-auto end(MyTestObject const &obj) -> Iterator<MyTestObject, int> {
-    return Iterator<MyTestObject, int, int>(
-        obj.parent, static_cast<decltype(obj.current)>(0));
+Iterator<MyTestObject, int> end(MyTestObject const &obj) {
+    return Iterator<MyTestObject, int, int>(obj.parent, 0);
 }
 } // namespace duckx
 

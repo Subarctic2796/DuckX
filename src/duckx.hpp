@@ -7,16 +7,98 @@
 #ifndef DUCKX_H
 #define DUCKX_H
 
-#include <stdlib.h>
-#include <string>
-
 #include "../thirdparty/pugixml/pugixml.hpp"
-#include "constants.hpp"
-#include "duckxiterator.hpp"
+#include <stdint.h>
+
+namespace duckx {
+// Cihan SARI start
+/*
+ * Under MIT license
+ * Author: Cihan SARI (@CihanSari)
+ * DuckX is a free library to work with docx files.
+ */
+
+template <class T, class P, class C = P> class Iterator {
+  private:
+    using ParentType = P;
+    using CurrentType = C;
+    ParentType parent{0};
+    CurrentType current{0};
+    mutable T buffer{};
+
+  public:
+    Iterator() = default;
+
+    Iterator(ParentType parent, CurrentType current)
+        : parent(parent), current(current) {}
+
+    bool operator!=(const Iterator &other) const {
+        return parent != other.parent || current != other.current;
+    }
+
+    bool operator==(const Iterator &other) const {
+        return !this->operator!=(other);
+    }
+
+    Iterator &operator++() {
+        this->current = this->current.next_sibling();
+        return *this;
+    }
+
+    const T &operator*() const {
+        // Only update the buffer when the user wants to accces to the data
+        buffer.set_parent(parent);
+        buffer.set_current(current);
+        return buffer;
+    }
+
+    const T *operator->() const { return &(this->operator*()); }
+};
+
+class IteratorHelper {
+  private:
+    using P = pugi::xml_node;
+    template <class T> static Iterator<T, P> make_begin(T const &obj) {
+        return Iterator<T, P>(obj.parent, obj.current);
+    }
+
+    template <class T> static Iterator<T, P> make_end(T const &obj) {
+        return Iterator<T, P>(obj.parent,
+                              static_cast<decltype(obj.current)>(0));
+    }
+
+    template <class T> friend Iterator<T, P> begin(T const &);
+    template <class T> friend Iterator<T, P> end(T const &);
+};
+
+// Entry point
+template <class T> Iterator<T, pugi::xml_node> begin(T const &obj) {
+    return IteratorHelper::make_begin(obj);
+}
+
+template <class T> Iterator<T, pugi::xml_node> end(T const &obj) {
+    return IteratorHelper::make_end(obj);
+}
+// Cihan SARI end
 
 // TODO: Use container-iterator design pattern!
 
-namespace duckx {
+// constants.hpp start
+// typedef unsigned const int formatting_flag;
+typedef const uint8_t formatting_flag;
+
+// text-formatting flags
+constexpr formatting_flag none = 0;
+constexpr formatting_flag bold = 1 << 0;
+constexpr formatting_flag italic = 1 << 1;
+constexpr formatting_flag underline = 1 << 2;
+constexpr formatting_flag strikethrough = 1 << 3;
+constexpr formatting_flag superscript = 1 << 4;
+constexpr formatting_flag subscript = 1 << 5;
+constexpr formatting_flag smallcaps = 1 << 6;
+constexpr formatting_flag shadow = 1 << 7;
+// constants.hpp end
+
 // Run contains runs in a paragraph
 class Run {
   private:
@@ -136,7 +218,7 @@ class Table {
 class Document {
   private:
     friend class IteratorHelper;
-    std::string _file;
+    std::string filename;
     Paragraph paragraph;
     Table table;
     pugi::xml_document document;

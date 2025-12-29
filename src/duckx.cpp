@@ -1,8 +1,6 @@
 #include "duckx.hpp"
 #include "../thirdparty/zip/zip.h"
 
-#include <cctype>
-
 // Hack on pugixml
 // We need to write xml to std string (or char *)
 // So overload the write function
@@ -180,44 +178,52 @@ duckx::Run &duckx::Paragraph::add_run(const char *text,
     // Insert meta to new run
     pugi::xml_node meta = new_run.append_child("w:rPr");
 
-    if (f & duckx::bold)
+    if (f & duckx::bold) {
         meta.append_child("w:b");
+    }
 
-    if (f & duckx::italic)
+    if (f & duckx::italic) {
         meta.append_child("w:i");
+    }
 
-    if (f & duckx::underline)
+    if (f & duckx::underline) {
         meta.append_child("w:u").append_attribute("w:val").set_value("single");
+    }
 
-    if (f & duckx::strikethrough)
+    if (f & duckx::strikethrough) {
         meta.append_child("w:strike")
             .append_attribute("w:val")
             .set_value("true");
+    }
 
-    if (f & duckx::superscript)
+    if (f & duckx::superscript) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("superscript");
-    else if (f & duckx::subscript)
+    } else if (f & duckx::subscript) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("subscript");
+    }
 
-    if (f & duckx::smallcaps)
+    if (f & duckx::smallcaps) {
         meta.append_child("w:smallCaps")
             .append_attribute("w:val")
             .set_value("true");
+    }
 
-    if (f & duckx::shadow)
+    if (f & duckx::shadow) {
         meta.append_child("w:shadow")
             .append_attribute("w:val")
             .set_value("true");
+    }
 
     pugi::xml_node new_run_text = new_run.append_child("w:t");
     // If the run starts or ends with whitespace characters, preserve them using
     // the xml:space attribute
-    if (*text != 0 && (isspace(text[0]) || isspace(text[strlen(text) - 1])))
+    if (*text != 0 && (isspace(text[0]) || isspace(text[strlen(text) - 1]))) {
         new_run_text.append_attribute("xml:space").set_value("preserve");
+    }
     new_run_text.text().set(text);
 
     return *new Run(this->current, new_run);
@@ -236,9 +242,9 @@ duckx::Paragraph::insert_paragraph_after(const std::string &text,
     return *p;
 }
 
-duckx::Document::Document(std::string directory) { this->_file = directory; }
+duckx::Document::Document(std::string filename) { this->filename = filename; }
 
-void duckx::Document::file(std::string directory) { this->_file = directory; }
+void duckx::Document::file(std::string filename) { this->filename = filename; }
 
 void duckx::Document::open() {
     void *buf = NULL;
@@ -246,7 +252,7 @@ void duckx::Document::open() {
 
     // Open file and load "xml" content to the document variable
     zip_t *zip =
-        zip_open(this->_file.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
+        zip_open(this->filename.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
 
     if (!zip) {
         this->flag_is_open = false;
@@ -287,8 +293,8 @@ void duckx::Document::save() const {
 
     // Open file and replace "xml" content
 
-    std::string original_file = this->_file;
-    std::string temp_file = this->_file + ".tmp";
+    std::string original_file = this->filename;
+    std::string temp_file = this->filename + ".tmp";
 
     // Create the new file
     zip_t *new_zip =
@@ -313,7 +319,7 @@ void duckx::Document::save() const {
         const char *name = zip_entry_name(orig_zip);
 
         // Skip copying the original file
-        if (std::string(name) != std::string("word/document.xml")) {
+        if (std::string(name) != "word/document.xml") {
             // Read the old content
             void *entry_buf;
             size_t entry_buf_size;
