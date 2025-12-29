@@ -8,7 +8,6 @@
 #define DUCKX_H
 
 #include "thirdparty/pugixml/pugixml.hpp"
-#include <stdint.h>
 
 namespace duckx {
 // Cihan SARI start
@@ -20,17 +19,14 @@ namespace duckx {
 
 template <class T, class P, class C = P> class Iterator {
   private:
-    using ParentType = P;
-    using CurrentType = C;
-    ParentType parent{0};
-    CurrentType current{0};
+    P parent{0};
+    C current{0};
     mutable T buffer{};
 
   public:
     Iterator() = default;
 
-    Iterator(ParentType parent, CurrentType current)
-        : parent(parent), current(current) {}
+    Iterator(P parent, C current) : parent(parent), current(current) {}
 
     bool operator!=(const Iterator &other) const {
         return parent != other.parent || current != other.current;
@@ -84,8 +80,7 @@ template <class T> Iterator<T, pugi::xml_node> end(T const &obj) {
 // TODO: Use container-iterator design pattern!
 
 // constants.hpp start
-// typedef unsigned const int formatting_flag;
-typedef const uint8_t formatting_flag;
+typedef const unsigned char formatting_flag;
 
 // text-formatting flags
 constexpr formatting_flag none = 0;
@@ -110,13 +105,13 @@ class Run {
 
   public:
     Run();
-    Run(pugi::xml_node, pugi::xml_node);
-    void set_parent(pugi::xml_node);
-    void set_current(pugi::xml_node);
+    Run(pugi::xml_node parent, pugi::xml_node current);
+    void set_parent(pugi::xml_node node);
+    void set_current(pugi::xml_node node);
 
     std::string get_text() const;
-    bool set_text(const std::string &) const;
-    bool set_text(const char *) const;
+    bool set_text(const std::string &text) const;
+    bool set_text(const char *text) const;
 
     Run &next();
     bool has_next() const;
@@ -136,18 +131,18 @@ class Paragraph {
 
   public:
     Paragraph();
-    Paragraph(pugi::xml_node, pugi::xml_node);
-    void set_parent(pugi::xml_node);
-    void set_current(pugi::xml_node);
+    Paragraph(pugi::xml_node parent, pugi::xml_node current);
+    void set_parent(pugi::xml_node node);
+    void set_current(pugi::xml_node node);
 
     Paragraph &next();
     bool has_next() const;
 
     Run &runs();
-    Run &add_run(const std::string &, duckx::formatting_flag = duckx::none);
-    Run &add_run(const char *, duckx::formatting_flag = duckx::none);
-    Paragraph &insert_paragraph_after(const std::string &,
-                                      duckx::formatting_flag = duckx::none);
+    Run &add_run(const std::string &text, formatting_flag f = none);
+    Run &add_run(const char *text, formatting_flag f = none);
+    Paragraph &insert_paragraph_after(const std::string &text,
+                                      formatting_flag f = none);
 };
 
 // TableCell contains one or more paragraphs
@@ -161,10 +156,10 @@ class TableCell {
 
   public:
     TableCell();
-    TableCell(pugi::xml_node, pugi::xml_node);
+    TableCell(pugi::xml_node parent, pugi::xml_node current);
 
-    void set_parent(pugi::xml_node);
-    void set_current(pugi::xml_node);
+    void set_parent(pugi::xml_node node);
+    void set_current(pugi::xml_node node);
 
     Paragraph &paragraphs();
 
@@ -182,9 +177,9 @@ class TableRow {
 
   public:
     TableRow();
-    TableRow(pugi::xml_node, pugi::xml_node);
-    void set_parent(pugi::xml_node);
-    void set_current(pugi::xml_node);
+    TableRow(pugi::xml_node parent, pugi::xml_node current);
+    void set_parent(pugi::xml_node node);
+    void set_current(pugi::xml_node node);
 
     TableCell &cells();
 
@@ -203,9 +198,9 @@ class Table {
 
   public:
     Table();
-    Table(pugi::xml_node, pugi::xml_node);
-    void set_parent(pugi::xml_node);
-    void set_current(pugi::xml_node);
+    Table(pugi::xml_node parent, pugi::xml_node current);
+    void set_parent(pugi::xml_node node);
+    void set_current(pugi::xml_node node);
 
     Table &next();
     bool has_next() const;
@@ -226,8 +221,8 @@ class Document {
 
   public:
     Document();
-    Document(std::string);
-    void file(std::string);
+    Document(const std::string &filename);
+    void file(const std::string &filename);
     void open();
     void save() const;
     bool is_open() const;

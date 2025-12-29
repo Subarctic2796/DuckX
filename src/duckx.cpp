@@ -242,9 +242,13 @@ duckx::Paragraph::insert_paragraph_after(const std::string &text,
     return *p;
 }
 
-duckx::Document::Document(std::string filename) { this->filename = filename; }
+duckx::Document::Document(const std::string &filename) {
+    this->filename = filename;
+}
 
-void duckx::Document::file(std::string filename) { this->filename = filename; }
+void duckx::Document::file(const std::string &filename) {
+    this->filename = filename;
+}
 
 void duckx::Document::open() {
     void *buf = NULL;
