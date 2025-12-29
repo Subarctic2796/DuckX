@@ -1,5 +1,5 @@
 #include "duckx.hpp"
-#include "../thirdparty/zip/zip.h"
+#include "thirdparty/zip/zip.h"
 
 // Hack on pugixml
 // We need to write xml to std string (or char *)

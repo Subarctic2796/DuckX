@@ -22,35 +22,35 @@ TEST_CASE("checks contents of my_test.docx with iterator") {
 }
 
 namespace duckx {
-struct MyTestObject final {
+struct TestObject final {
     int current = 42;
     int parent = 1;
     int j = 86;
-    MyTestObject(int parent, int current) : parent(parent), current(current) {}
-    MyTestObject() = default;
-    MyTestObject &next() {
+    TestObject(int parent, int current) : parent(parent), current(current) {}
+    TestObject() = default;
+    TestObject &next() {
         ++current;
         return *this;
     }
     bool has_next() const { return current != j; }
-    bool operator==(MyTestObject const &other) const {
+    bool operator==(TestObject const &other) const {
         return other.current == current && other.j == j;
     }
 };
 // Entry point
-Iterator<MyTestObject, int> begin(MyTestObject const &obj) {
-    return Iterator<MyTestObject, int, int>(obj.parent, obj.current);
+Iterator<TestObject, int> begin(TestObject const &obj) {
+    return Iterator<TestObject, int, int>(obj.parent, obj.current);
 }
 
-Iterator<MyTestObject, int> end(MyTestObject const &obj) {
-    return Iterator<MyTestObject, int, int>(obj.parent, 0);
+Iterator<TestObject, int> end(TestObject const &obj) {
+    return Iterator<TestObject, int, int>(obj.parent, 0);
 }
 } // namespace duckx
 
 TEST_CASE("Check equality in") {
-    auto const testObject = duckx::MyTestObject{};
-    auto p1 = begin(testObject);
-    auto p2 = begin(testObject);
+    auto const testObj = duckx::TestObject{};
+    auto p1 = begin(testObj);
+    auto p2 = begin(testObj);
     CHECK_EQ(p1, p2);
     duckx::Document doc("my_test.docx");
     doc.open();

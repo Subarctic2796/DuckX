@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 __build() {
+    if [[ ! -d build ]]; then
+        mkdir build
+        cd build
+        cmake ..
+        cd ..
+    fi
     cd build
     cmake --build .
     if [[ $1 == "true" ]]; then

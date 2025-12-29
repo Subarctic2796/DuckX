@@ -9,27 +9,16 @@ endif()
 option(BUILD_SHARED_LIBS "Build shared instead of static library" OFF)
 option(BUILD_SAMPLES "Build provided samples" OFF)
 
-# Fix issues when building with clang 12, next version of clang
-# else we might encounter errors making the library
-# not being able to be compiled
-
 set(CMAKE_CXX_STANDARD 23)
 
-set(SOURCES src/duckx.cpp)
-
-set(THIRD_PARTY_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml/pugixml.hpp"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml/pugiconfig.hpp"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zip/zip.h")
-set(THIRD_PARTY_SRC "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zip/zip.c"
-		    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml/pugixml.cpp")
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml"
-                    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zip")
+set(SOURCES src/duckx.cpp
+	    src/thirdparty/zip/zip.c
+	    src/thirdparty/pugixml/pugixml.cpp)
 
 if(BUILD_SHARED_LIBS)
-    add_library(duckx SHARED ${SOURCES} ${THIRD_PARTY_SRC})
+    add_library(duckx SHARED ${SOURCES})
 else()
-    add_library(duckx STATIC ${SOURCES} ${THIRD_PARTY_SRC})
+    add_library(duckx STATIC ${SOURCES})
 endif()
 
 add_library(duckx::duckx ALIAS duckx)
@@ -64,7 +53,7 @@ install(
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 install(EXPORT duckxConfig NAMESPACE duckx:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/duckx)
-install(FILES ${HEADERS} ${THIRD_PARTY_HEADERS} DESTINATION include/duckx)
+install(FILES ${HEADERS} DESTINATION include/duckx)
 
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)

@@ -7,7 +7,7 @@
 #ifndef DUCKX_H
 #define DUCKX_H
 
-#include "../thirdparty/pugixml/pugixml.hpp"
+#include "thirdparty/pugixml/pugixml.hpp"
 #include <stdint.h>
 
 namespace duckx {
