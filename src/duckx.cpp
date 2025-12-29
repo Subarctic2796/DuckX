@@ -1,4 +1,5 @@
 #include "duckx.hpp"
+#include "../thirdparty/zip/zip.h"
 
 #include <cctype>
 
@@ -235,18 +236,9 @@ duckx::Paragraph::insert_paragraph_after(const std::string &text,
     return *p;
 }
 
-duckx::Document::Document() {
-    // TODO: this function must be removed!
-    this->directory = "";
-}
+duckx::Document::Document(std::string directory) { this->_file = directory; }
 
-duckx::Document::Document(std::string directory) {
-    this->directory = directory;
-}
-
-void duckx::Document::file(std::string directory) {
-    this->directory = directory;
-}
+void duckx::Document::file(std::string directory) { this->_file = directory; }
 
 void duckx::Document::open() {
     void *buf = NULL;
@@ -254,7 +246,7 @@ void duckx::Document::open() {
 
     // Open file and load "xml" content to the document variable
     zip_t *zip =
-        zip_open(this->directory.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
+        zip_open(this->_file.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
 
     if (!zip) {
         this->flag_is_open = false;
@@ -295,8 +287,8 @@ void duckx::Document::save() const {
 
     // Open file and replace "xml" content
 
-    std::string original_file = this->directory;
-    std::string temp_file = this->directory + ".tmp";
+    std::string original_file = this->_file;
+    std::string temp_file = this->_file + ".tmp";
 
     // Create the new file
     zip_t *new_zip =
@@ -307,7 +299,7 @@ void duckx::Document::save() const {
 
     const char *buf = writer.result.c_str();
 
-    zip_entry_write(new_zip, buf, strlen(buf));
+    zip_entry_write(new_zip, buf, writer.result.length());
     zip_entry_close(new_zip);
 
     // Open the original zip and copy all files which are not replaced by duckX

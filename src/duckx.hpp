@@ -7,14 +7,12 @@
 #ifndef DUCKX_H
 #define DUCKX_H
 
-#include <cstdio>
 #include <stdlib.h>
 #include <string>
 
-#include <constants.hpp>
-#include <duckxiterator.hpp>
-#include <pugixml.hpp>
-#include <zip.h>
+#include "../thirdparty/pugixml/pugixml.hpp"
+#include "constants.hpp"
+#include "duckxiterator.hpp"
 
 // TODO: Use container-iterator design pattern!
 
@@ -138,7 +136,7 @@ class Table {
 class Document {
   private:
     friend class IteratorHelper;
-    std::string directory;
+    std::string _file;
     Paragraph paragraph;
     Table table;
     pugi::xml_document document;

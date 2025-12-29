@@ -46,7 +46,7 @@ template <class T, class P, class C = P> class Iterator {
         return buffer;
     }
 
-    auto operator-> () const -> T const * { return &(this->operator*()); }
+    auto operator->() const -> T const * { return &(this->operator*()); }
 };
 
 class IteratorHelper {
