@@ -12,207 +12,115 @@ struct xml_string_writer : pugi::xml_writer {
     }
 };
 
-duckx::Run::Run() {}
+namespace duckx {
+Run::Run() {}
 
-duckx::Run::Run(pugi::xml_node parent, pugi::xml_node current) {
+Run::Run(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
 }
 
-void duckx::Run::set_parent(pugi::xml_node node) {
+void Run::set_parent(pugi::xml_node node) {
     this->parent = node;
     this->current = this->parent.child("w:r");
 }
 
-void duckx::Run::set_current(pugi::xml_node node) { this->current = node; }
+void Run::set_current(pugi::xml_node node) { this->current = node; }
 
-std::string duckx::Run::get_text() const {
+std::string Run::get_text() const {
     return this->current.child("w:t").text().get();
 }
 
-bool duckx::Run::set_text(const std::string &text) const {
+bool Run::set_text(const std::string &text) const {
     return this->current.child("w:t").text().set(text.c_str());
 }
 
-bool duckx::Run::set_text(const char *text) const {
+bool Run::set_text(const char *text) const {
     return this->current.child("w:t").text().set(text);
 }
 
-duckx::Run &duckx::Run::next() {
+Run &Run::next() {
     this->current = this->current.next_sibling();
     return *this;
 }
 
-bool duckx::Run::has_next() const { return this->current != 0; }
+bool Run::has_next() const { return this->current != 0; }
 
-// Table cells
-duckx::TableCell::TableCell() {}
+// Paragraphs
+Paragraph::Paragraph() {}
 
-duckx::TableCell::TableCell(pugi::xml_node parent, pugi::xml_node current) {
+Paragraph::Paragraph(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
 }
 
-void duckx::TableCell::set_parent(pugi::xml_node node) {
-    this->parent = node;
-    this->current = this->parent.child("w:tc");
-
-    this->paragraph.set_parent(this->current);
-}
-
-void duckx::TableCell::set_current(pugi::xml_node node) {
-    this->current = node;
-}
-
-bool duckx::TableCell::has_next() const { return this->current != 0; }
-
-duckx::TableCell &duckx::TableCell::next() {
-    this->current = this->current.next_sibling();
-    return *this;
-}
-
-duckx::Paragraph &duckx::TableCell::paragraphs() {
-    this->paragraph.set_parent(this->current);
-    return this->paragraph;
-}
-
-// Table rows
-duckx::TableRow::TableRow() {}
-
-duckx::TableRow::TableRow(pugi::xml_node parent, pugi::xml_node current) {
-    this->set_parent(parent);
-    this->set_current(current);
-}
-
-void duckx::TableRow::set_parent(pugi::xml_node node) {
-    this->parent = node;
-    this->current = this->parent.child("w:tr");
-
-    this->cell.set_parent(this->current);
-}
-
-void duckx::TableRow::set_current(pugi::xml_node node) { this->current = node; }
-
-duckx::TableRow &duckx::TableRow::next() {
-    this->current = this->current.next_sibling();
-    return *this;
-}
-
-duckx::TableCell &duckx::TableRow::cells() {
-    this->cell.set_parent(this->current);
-    return this->cell;
-}
-
-bool duckx::TableRow::has_next() const { return this->current != 0; }
-
-// Tables
-duckx::Table::Table() {}
-
-duckx::Table::Table(pugi::xml_node parent, pugi::xml_node current) {
-    this->set_parent(parent);
-    this->set_current(current);
-}
-
-void duckx::Table::set_parent(pugi::xml_node node) {
-    this->parent = node;
-    this->current = this->parent.child("w:tbl");
-
-    this->row.set_parent(this->current);
-}
-
-bool duckx::Table::has_next() const { return this->current != 0; }
-
-duckx::Table &duckx::Table::next() {
-    this->current = this->current.next_sibling();
-    this->row.set_parent(this->current);
-    return *this;
-}
-
-void duckx::Table::set_current(pugi::xml_node node) { this->current = node; }
-
-duckx::TableRow &duckx::Table::rows() {
-    this->row.set_parent(this->current);
-    return this->row;
-}
-
-duckx::Paragraph::Paragraph() {}
-
-duckx::Paragraph::Paragraph(pugi::xml_node parent, pugi::xml_node current) {
-    this->set_parent(parent);
-    this->set_current(current);
-}
-
-void duckx::Paragraph::set_parent(pugi::xml_node node) {
+void Paragraph::set_parent(pugi::xml_node node) {
     this->parent = node;
     this->current = this->parent.child("w:p");
 
     this->run.set_parent(this->current);
 }
 
-void duckx::Paragraph::set_current(pugi::xml_node node) {
-    this->current = node;
-}
+void Paragraph::set_current(pugi::xml_node node) { this->current = node; }
 
-duckx::Paragraph &duckx::Paragraph::next() {
+Paragraph &Paragraph::next() {
     this->current = this->current.next_sibling();
     this->run.set_parent(this->current);
     return *this;
 }
 
-bool duckx::Paragraph::has_next() const { return this->current != 0; }
+bool Paragraph::has_next() const { return this->current != 0; }
 
-duckx::Run &duckx::Paragraph::runs() {
+Run &Paragraph::runs() {
     this->run.set_parent(this->current);
     return this->run;
 }
 
-duckx::Run &duckx::Paragraph::add_run(const std::string &text,
-                                      duckx::formatting_flag f) {
+Run &Paragraph::add_run(const std::string &text, formatting_flag f) {
     return this->add_run(text.c_str(), f);
 }
 
-duckx::Run &duckx::Paragraph::add_run(const char *text,
-                                      duckx::formatting_flag f) {
+Run &Paragraph::add_run(const char *text, formatting_flag f) {
     // Add new run
     pugi::xml_node new_run = this->current.append_child("w:r");
     // Insert meta to new run
     pugi::xml_node meta = new_run.append_child("w:rPr");
 
-    if (f & duckx::bold) {
+    if (f & bold) {
         meta.append_child("w:b");
     }
 
-    if (f & duckx::italic) {
+    if (f & italic) {
         meta.append_child("w:i");
     }
 
-    if (f & duckx::underline) {
+    if (f & underline) {
         meta.append_child("w:u").append_attribute("w:val").set_value("single");
     }
 
-    if (f & duckx::strikethrough) {
+    if (f & strikethrough) {
         meta.append_child("w:strike")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & duckx::superscript) {
+    if (f & superscript) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("superscript");
-    } else if (f & duckx::subscript) {
+    } else if (f & subscript) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("subscript");
     }
 
-    if (f & duckx::smallcaps) {
+    if (f & smallcaps) {
         meta.append_child("w:smallCaps")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & duckx::shadow) {
+    if (f & shadow) {
         meta.append_child("w:shadow")
             .append_attribute("w:val")
             .set_value("true");
@@ -229,9 +137,8 @@ duckx::Run &duckx::Paragraph::add_run(const char *text,
     return *new Run(this->current, new_run);
 }
 
-duckx::Paragraph &
-duckx::Paragraph::insert_paragraph_after(const std::string &text,
-                                         duckx::formatting_flag f) {
+Paragraph &Paragraph::insert_paragraph_after(const std::string &text,
+                                             formatting_flag f) {
     pugi::xml_node new_para =
         this->parent.insert_child_after("w:p", this->current);
 
@@ -242,15 +149,101 @@ duckx::Paragraph::insert_paragraph_after(const std::string &text,
     return *p;
 }
 
-duckx::Document::Document(const std::string &filename) {
-    this->filename = filename;
+// Table cells
+TableCell::TableCell() {}
+
+TableCell::TableCell(pugi::xml_node parent, pugi::xml_node current) {
+    this->set_parent(parent);
+    this->set_current(current);
 }
 
-void duckx::Document::file(const std::string &filename) {
-    this->filename = filename;
+void TableCell::set_parent(pugi::xml_node node) {
+    this->parent = node;
+    this->current = this->parent.child("w:tc");
+
+    this->paragraph.set_parent(this->current);
 }
 
-void duckx::Document::open() {
+void TableCell::set_current(pugi::xml_node node) { this->current = node; }
+
+Paragraph &TableCell::paragraphs() {
+    this->paragraph.set_parent(this->current);
+    return this->paragraph;
+}
+
+TableCell &TableCell::next() {
+    this->current = this->current.next_sibling();
+    return *this;
+}
+
+bool TableCell::has_next() const { return this->current != 0; }
+
+// Table rows
+TableRow::TableRow() {}
+
+TableRow::TableRow(pugi::xml_node parent, pugi::xml_node current) {
+    this->set_parent(parent);
+    this->set_current(current);
+}
+
+void TableRow::set_parent(pugi::xml_node node) {
+    this->parent = node;
+    this->current = this->parent.child("w:tr");
+
+    this->cell.set_parent(this->current);
+}
+
+void TableRow::set_current(pugi::xml_node node) { this->current = node; }
+
+TableCell &TableRow::cells() {
+    this->cell.set_parent(this->current);
+    return this->cell;
+}
+
+TableRow &TableRow::next() {
+    this->current = this->current.next_sibling();
+    return *this;
+}
+
+bool TableRow::has_next() const { return this->current != 0; }
+
+// Tables
+Table::Table() {}
+
+Table::Table(pugi::xml_node parent, pugi::xml_node current) {
+    this->set_parent(parent);
+    this->set_current(current);
+}
+
+void Table::set_parent(pugi::xml_node node) {
+    this->parent = node;
+    this->current = this->parent.child("w:tbl");
+
+    this->row.set_parent(this->current);
+}
+
+void Table::set_current(pugi::xml_node node) { this->current = node; }
+
+Table &Table::next() {
+    this->current = this->current.next_sibling();
+    this->row.set_parent(this->current);
+    return *this;
+}
+
+bool Table::has_next() const { return this->current != 0; }
+
+TableRow &Table::rows() {
+    this->row.set_parent(this->current);
+    return this->row;
+}
+
+// Document
+Document::Document() {}
+Document::Document(const std::string &filename) { this->filename = filename; }
+
+void Document::file(const std::string &filename) { this->filename = filename; }
+
+void Document::open() {
     void *buf = NULL;
     size_t bufsize;
 
@@ -277,7 +270,7 @@ void duckx::Document::open() {
     this->paragraph.set_parent(document.child("w:document").child("w:body"));
 }
 
-void duckx::Document::save() const {
+void Document::save() const {
     // minizip only supports appending or writing to new files
     // so we must
     // - make a new file
@@ -296,7 +289,6 @@ void duckx::Document::save() const {
     this->document.print(writer);
 
     // Open file and replace "xml" content
-
     std::string original_file = this->filename;
     std::string temp_file = this->filename + ".tmp";
 
@@ -349,14 +341,15 @@ void duckx::Document::save() const {
     rename(temp_file.c_str(), original_file.c_str());
 }
 
-bool duckx::Document::is_open() const { return this->flag_is_open; }
+bool Document::is_open() const { return this->flag_is_open; }
 
-duckx::Paragraph &duckx::Document::paragraphs() {
+Paragraph &Document::paragraphs() {
     this->paragraph.set_parent(document.child("w:document").child("w:body"));
     return this->paragraph;
 }
 
-duckx::Table &duckx::Document::tables() {
+Table &Document::tables() {
     this->table.set_parent(document.child("w:document").child("w:body"));
     return this->table;
 }
+} // namespace duckx

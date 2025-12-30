@@ -33,7 +33,7 @@ template <class T, class P, class C = P> class Iterator {
     }
 
     bool operator==(const Iterator &other) const {
-        return !this->operator!=(other);
+        return parent == other.parent || current == other.current;
     }
 
     Iterator &operator++() {
