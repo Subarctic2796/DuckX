@@ -7,6 +7,8 @@
 #ifndef DUCKX_H
 #define DUCKX_H
 
+#define DUCKX_VERSION "1.2.3"
+
 #include "thirdparty/pugixml/pugixml.hpp"
 
 namespace duckx {
