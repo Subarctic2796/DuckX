@@ -1,20 +1,7 @@
 #include "duckx.hpp"
 #include "thirdparty/zip/zip.h"
 
-// Hack on pugixml
-// We need to write xml to std string (or char *)
-// So overload the write function
-struct xml_string_writer : pugi::xml_writer {
-    std::string result;
-
-    virtual void write(const void *data, size_t size) {
-        result.append(static_cast<const char *>(data), size);
-    }
-};
-
 namespace duckx {
-Run::Run() {}
-
 Run::Run(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
@@ -47,8 +34,6 @@ Run &Run::next() {
 bool Run::has_next() const { return this->current != 0; }
 
 // Paragraphs
-Paragraph::Paragraph() {}
-
 Paragraph::Paragraph(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
@@ -150,8 +135,6 @@ Paragraph &Paragraph::insert_paragraph_after(const std::string &text,
 }
 
 // Table cells
-TableCell::TableCell() {}
-
 TableCell::TableCell(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
@@ -179,7 +162,6 @@ TableCell &TableCell::next() {
 bool TableCell::has_next() const { return this->current != 0; }
 
 // Table rows
-TableRow::TableRow() {}
 
 TableRow::TableRow(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
@@ -208,8 +190,6 @@ TableRow &TableRow::next() {
 bool TableRow::has_next() const { return this->current != 0; }
 
 // Tables
-Table::Table() {}
-
 Table::Table(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);
@@ -238,7 +218,6 @@ TableRow &Table::rows() {
 }
 
 // Document
-Document::Document() {}
 Document::Document(const std::string &filename) { this->filename = filename; }
 
 void Document::file(const std::string &filename) { this->filename = filename; }
@@ -284,8 +263,17 @@ void Document::save() const {
         return;
     }
 
+    // Hack on pugixml
+    // We need to write xml to std string (or char *)
+    // So overload the write function
+    struct xml_string_writer : pugi::xml_writer {
+        std::string result;
+
+        virtual void write(const void *data, size_t size) {
+            result.append(static_cast<const char *>(data), size);
+        }
+    } writer;
     // Read document buffer
-    xml_string_writer writer;
     this->document.print(writer);
 
     // Open file and replace "xml" content

@@ -8,6 +8,13 @@
 
 # DuckX
 
+This is forked [from](https://github.com/amiremohamadi/duckx) and is a bit of a mess at the moment.
+This is because I plan on making it a header only library.
+Although it acts as a hybrid header only and non header only library it still functions exactly the same as the original library.
+I haven't made any changes to the implementation besides from moving files around and moving functions around. I have also made
+everything a little bit more explict, I removed `auto`'s and made the `formatting_flag`'s `constexprs`.
+I am currently working on getting everything to be amalgameted into a single `duckx.hpp` that can then be used as a real
+header only library.
 Create, read and write Microsoft Office Word docx files.
 More informations are available in [this](https://duckx.readthedocs.io/en/latest/) documentation.
 
@@ -38,6 +45,23 @@ int main() {
     }
 }
 ```
+or as a 'header only' library
+```c++
+#include <iostream>
+#define DUCKX_IMPLEMENTAION
+#include <duckx.hpp>
+
+int main() {
+    duckx::Document doc("file.docx");
+    doc.open();
+
+    for (auto p : doc.paragraphs()) {
+	    for (auto r : p.runs()) {
+			std::cout << r.get_text() << std::endl;
+		}
+    }
+}
+```
 
 <br/>
 And compile your file like this:
@@ -52,7 +76,9 @@ g++ sample1.cpp -lduckx
 ## Install ##
 
 Just copy all of the files in the *src* folder. If you want to update the dependencies just replace the files from the dependency
-you wish to update with the newer files and make the needed changes
+you wish to update with the newer files and make the needed changes.
+If you want it to act almost as if it was a header only library then copy all of the files from thirdparty
+and then only `duckx.hpp` from the *src* folder.
 
 #### Compiling
 

@@ -12,8 +12,7 @@ option(BUILD_SAMPLES "Build provided samples" OFF)
 set(CMAKE_CXX_STANDARD 23)
 
 set(SOURCES src/duckx.cpp
-	    src/thirdparty/zip/zip.c
-	    src/thirdparty/pugixml/pugixml.cpp)
+	    src/thirdparty/zip/zip.c)
 
 if(BUILD_SHARED_LIBS)
     add_library(duckx SHARED ${SOURCES})
