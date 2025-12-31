@@ -71,41 +71,41 @@ Run &Paragraph::add_run(const char *text, formatting_flag f) {
     // Insert meta to new run
     pugi::xml_node meta = new_run.append_child("w:rPr");
 
-    if (f & bold) {
+    if (f & BOLD) {
         meta.append_child("w:b");
     }
 
-    if (f & italic) {
+    if (f & ITALIC) {
         meta.append_child("w:i");
     }
 
-    if (f & underline) {
+    if (f & UNDERLINE) {
         meta.append_child("w:u").append_attribute("w:val").set_value("single");
     }
 
-    if (f & strikethrough) {
+    if (f & STRIKETHROUGH) {
         meta.append_child("w:strike")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & superscript) {
+    if (f & SUPERSCRIPT) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("superscript");
-    } else if (f & subscript) {
+    } else if (f & SUBSCRIPT) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("subscript");
     }
 
-    if (f & smallcaps) {
+    if (f & SMALLCAPS) {
         meta.append_child("w:smallCaps")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & shadow) {
+    if (f & SHADOW) {
         meta.append_child("w:shadow")
             .append_attribute("w:val")
             .set_value("true");
@@ -162,7 +162,6 @@ TableCell &TableCell::next() {
 bool TableCell::has_next() const { return this->current != 0; }
 
 // Table rows
-
 TableRow::TableRow(pugi::xml_node parent, pugi::xml_node current) {
     this->set_parent(parent);
     this->set_current(current);

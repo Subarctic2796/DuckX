@@ -30,11 +30,11 @@ template <class T, class P, class C = P> class Iterator {
 
     Iterator(P parent, C current) : parent(parent), current(current) {}
 
-    bool operator!=(const Iterator &other) const {
+    constexpr bool operator!=(const Iterator &other) const {
         return parent != other.parent || current != other.current;
     }
 
-    bool operator==(const Iterator &other) const {
+    constexpr bool operator==(const Iterator &other) const {
         return parent == other.parent || current == other.current;
     }
 
@@ -56,25 +56,26 @@ template <class T, class P, class C = P> class Iterator {
 class IteratorHelper {
   private:
     using P = pugi::xml_node;
-    template <class T> static Iterator<T, P> make_begin(T const &obj) {
+    template <class T>
+    static constexpr Iterator<T, P> make_begin(T const &obj) {
         return Iterator<T, P>(obj.parent, obj.current);
     }
 
-    template <class T> static Iterator<T, P> make_end(T const &obj) {
+    template <class T> static constexpr Iterator<T, P> make_end(T const &obj) {
         return Iterator<T, P>(obj.parent,
                               static_cast<decltype(obj.current)>(0));
     }
 
-    template <class T> friend Iterator<T, P> begin(T const &);
-    template <class T> friend Iterator<T, P> end(T const &);
+    template <class T> friend constexpr Iterator<T, P> begin(T const &obj);
+    template <class T> friend constexpr Iterator<T, P> end(T const &obj);
 };
 
 // Entry point
-template <class T> Iterator<T, pugi::xml_node> begin(T const &obj) {
+template <class T> constexpr Iterator<T, pugi::xml_node> begin(T const &obj) {
     return IteratorHelper::make_begin(obj);
 }
 
-template <class T> Iterator<T, pugi::xml_node> end(T const &obj) {
+template <class T> constexpr Iterator<T, pugi::xml_node> end(T const &obj) {
     return IteratorHelper::make_end(obj);
 }
 // Cihan SARI end
@@ -82,18 +83,18 @@ template <class T> Iterator<T, pugi::xml_node> end(T const &obj) {
 // TODO: Use container-iterator design pattern!
 
 // constants.hpp start
-typedef const unsigned short formatting_flag;
-
 // text-formatting flags
-constexpr formatting_flag none = 0;
-constexpr formatting_flag bold = 1 << 0;
-constexpr formatting_flag italic = 1 << 1;
-constexpr formatting_flag underline = 1 << 2;
-constexpr formatting_flag strikethrough = 1 << 3;
-constexpr formatting_flag superscript = 1 << 4;
-constexpr formatting_flag subscript = 1 << 5;
-constexpr formatting_flag smallcaps = 1 << 6;
-constexpr formatting_flag shadow = 1 << 7;
+enum formatting_flag {
+    NONE = 0,
+    BOLD = 1 << 0,
+    ITALIC = 1 << 1,
+    UNDERLINE = 1 << 2,
+    STRIKETHROUGH = 1 << 3,
+    SUPERSCRIPT = 1 << 4,
+    SUBSCRIPT = 1 << 5,
+    SMALLCAPS = 1 << 6,
+    SHADOW = 1 << 7,
+};
 // constants.hpp end
 
 // Run contains runs in a paragraph
@@ -141,10 +142,10 @@ class Paragraph {
     bool has_next() const;
 
     Run &runs();
-    Run &add_run(const std::string &text, formatting_flag f = none);
-    Run &add_run(const char *text, formatting_flag f = none);
+    Run &add_run(const std::string &text, formatting_flag f = NONE);
+    Run &add_run(const char *text, formatting_flag f = NONE);
     Paragraph &insert_paragraph_after(const std::string &text,
-                                      formatting_flag f = none);
+                                      formatting_flag f = NONE);
 };
 
 // TableCell contains one or more paragraphs
@@ -306,41 +307,41 @@ Run &Paragraph::add_run(const char *text, formatting_flag f) {
     // Insert meta to new run
     pugi::xml_node meta = new_run.append_child("w:rPr");
 
-    if (f & bold) {
+    if (f & BOLD) {
         meta.append_child("w:b");
     }
 
-    if (f & italic) {
+    if (f & ITALIC) {
         meta.append_child("w:i");
     }
 
-    if (f & underline) {
+    if (f & UNDERLINE) {
         meta.append_child("w:u").append_attribute("w:val").set_value("single");
     }
 
-    if (f & strikethrough) {
+    if (f & STRIKETHROUGH) {
         meta.append_child("w:strike")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & superscript) {
+    if (f & SUPERSCRIPT) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("superscript");
-    } else if (f & subscript) {
+    } else if (f & SUBSCRIPT) {
         meta.append_child("w:vertAlign")
             .append_attribute("w:val")
             .set_value("subscript");
     }
 
-    if (f & smallcaps) {
+    if (f & SMALLCAPS) {
         meta.append_child("w:smallCaps")
             .append_attribute("w:val")
             .set_value("true");
     }
 
-    if (f & shadow) {
+    if (f & SHADOW) {
         meta.append_child("w:shadow")
             .append_attribute("w:val")
             .set_value("true");
