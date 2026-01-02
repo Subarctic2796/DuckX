@@ -99,7 +99,7 @@
 #endif
 
 // Include user configuration file (this can define various configuration macros)
-#include "pugiconfig.hpp"
+
 
 #ifndef HEADER_PUGIXML_HPP
 #define HEADER_PUGIXML_HPP
@@ -1637,34 +1637,6 @@ namespace std
 // Use macro expansion in #include to work around QMake (QTBUG-11923)
 #if defined(PUGIXML_HEADER_ONLY) && !defined(PUGIXML_SOURCE)
 #	define PUGIXML_SOURCE "pugixml.cpp"
-#	include PUGIXML_SOURCE
-#endif
-
-/**
- * Copyright (c) 2006-2025 Arseny Kapoulkine
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
 /**
  * pugixml parser - version 1.15
  * --------------------------------------------------------
@@ -1679,7 +1651,7 @@ namespace std
 #ifndef SOURCE_PUGIXML_CPP
 #define SOURCE_PUGIXML_CPP
 
-#include "pugixml.hpp"
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15222,6 +15194,32 @@ namespace pugi
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+#endif
+
+/**
+ * Copyright (c) 2006-2025 Arseny Kapoulkine
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #ifndef MINIZ_EXPORT
 #define MINIZ_EXPORT
@@ -26053,6 +26051,9 @@ extern ZIP_EXPORT int zip_extract(const char *zipname, const char *dir,
 
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
@@ -26089,8 +26090,8 @@ extern ZIP_EXPORT int zip_extract(const char *zipname, const char *dir,
 #include <unistd.h>
 #endif
 
-#include "miniz.h"
-#include "zip.h"
+
+
 
 #ifdef _MSC_VER
 #include <io.h>
@@ -28227,6 +28228,9 @@ int zip_extract(const char *zipname, const char *dir,
   return zip_archive_extract(&zip_archive, dir, on_extract, arg);
 }
 
+#ifdef __cplusplus
+}
+#endif
 /*
  * Under MIT license
  * Author: Amir Mohamadi (@amiremohamadi)
