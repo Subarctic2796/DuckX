@@ -38,13 +38,16 @@ __amalgamate_add_pugixml() {
     # pugixml.hpp
     # replace '#include PUGIXML_SOURCE' with pugixml.cpp
     # this is the size of the license on other stuff needed
-    local last26="$(tail -n 26 ${pugixml_files[hpp]})"
-    local nlines=$(wc -l ${pugixml_files[hpp]})
+    local hpp=${pugixml_files[hpp]}
+    local last26=$(tail -n 26 ${hpp})
+    local nlines=$(wc -l ${hpp})
     nlines=${nlines%[[:space:]]*}
-    head -n $(( nlines - 27 )) ${pugixml_files[hpp]} >> $DUCKX_AMALG
+    head -n $(( nlines - 27 )) ${hpp} >> $DUCKX_AMALG
 
     # pugixml.cpp
+    echo "#ifdef DUCKX_IMPLEMENTATION" >> $DUCKX_AMALG
     cat "${pugixml_files[cpp]}" >> $DUCKX_AMALG
+    echo "#endif // DUCKX_IMPLEMENTATION" >> $DUCKX_AMALG
     echo "$last26" >> $DUCKX_AMALG
 
     # remove '#include "pugiconfig.hpp"'
@@ -68,6 +71,7 @@ __amalgamate_add_zip() {
     cat "${zip_files[h]}" >> $DUCKX_AMALG
     echo "" >> $DUCKX_AMALG
     # make sure zip.c gets compiled properly for c++
+    echo "#ifdef DUCKX_IMPLEMENTATION" >> $DUCKX_AMALG
     echo "#ifdef __cplusplus
 extern \"C\" {
 #endif" >> $DUCKX_AMALG
@@ -77,6 +81,7 @@ extern \"C\" {
     echo "#ifdef __cplusplus
 }
 #endif" >> $DUCKX_AMALG
+    echo "#endif // DUCKX_IMPLEMENTATION" >> $DUCKX_AMALG
 
     # remove '#include "miniz.h"'
     sed -i 's/#include "miniz.h"//' $DUCKX_AMALG
@@ -138,11 +143,11 @@ case "$1" in
         ;;
     'test-amalg')
         __amalgamate
-        clang++ -Wall -Wextra -xc++ -c duckx_amalg.hpp 2> /dev/null
+        clang++ -Wall -Wextra -xc++ -DDUCKX_IMPLEMENTATION -c duckx_amalg.hpp 2> /dev/null
         test_code=$?
         if (( test_code != 0 )); then
             echo "compiling failed"
-            clang++ -Wall -Wextra -xc++ -c duckx_amalg.hpp
+            clang++ -Wall -Wextra -xc++ -DDUCKX_IMPLEMENTATION -c duckx_amalg.hpp
         fi
         ;;
     *)

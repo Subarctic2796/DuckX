@@ -8,6 +8,8 @@
 
 # DuckX
 
+> [!NOTE]
+> Header only works if you recompile it completely everytime, you can't compile it as a separate translation unit yet
 This is forked version of [duckx](https://github.com/amiremohamadi/duckx) and can now act as a header only library.
 Although it is a fork nothing besides making it into a header only library has changed.
 I haven't made any changes to the implementation besides from moving files around and moving functions around. I have also made

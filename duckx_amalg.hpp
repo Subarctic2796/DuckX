@@ -1637,6 +1637,7 @@ namespace std
 // Use macro expansion in #include to work around QMake (QTBUG-11923)
 #if defined(PUGIXML_HEADER_ONLY) && !defined(PUGIXML_SOURCE)
 #	define PUGIXML_SOURCE "pugixml.cpp"
+#ifdef DUCKX_IMPLEMENTATION
 /**
  * pugixml parser - version 1.15
  * --------------------------------------------------------
@@ -15194,6 +15195,7 @@ namespace pugi
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+#endif // DUCKX_IMPLEMENTATION
 #endif
 
 /**
@@ -26051,6 +26053,7 @@ extern ZIP_EXPORT int zip_extract(const char *zipname, const char *dir,
 
 #endif
 
+#ifdef DUCKX_IMPLEMENTATION
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28231,6 +28234,7 @@ int zip_extract(const char *zipname, const char *dir,
 #ifdef __cplusplus
 }
 #endif
+#endif // DUCKX_IMPLEMENTATION
 /*
  * Under MIT license
  * Author: Amir Mohamadi (@amiremohamadi)
